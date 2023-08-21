@@ -4,19 +4,17 @@ services:
       context: .
     ports:
       - '8000:8000'
+      - '587:587'
+    env_file: .env
     volumes:
       - ./project:/project
-    environment:
-      - DB_HOST=database
-      - DB_NAME=postgres
-      - DB_USER=postgres
-      - DB_PASS=postgres
 
     command: >
       sh -c 'python manage.py runserver  0.0.0.0:8000'
 
     depends_on:
       - database
+      - redis
 
   database:
     image: postgres:14.6-alpine
@@ -24,3 +22,42 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+  redis:
+    image: redis:7.0.5-alpine
+    hostname: redis
+    volumes:
+      - /var/lib/redis/data/
+
+  celery:
+    build: .
+    command: >
+       sh -c "celery -A project worker -l info"
+    volumes:
+      - ./project:/project
+    depends_on:
+      - redis
+    env_file: .env
+  celery-beat:
+    build: .
+    command: celery -A project beat -l info
+    volumes:
+      - ./project:/project
+    depends_on:
+      - redis
+
+  flower:
+    build: .
+    command: celery -A project flower
+    volumes:
+      - ./project:/project
+    depends_on:
+      - redis
+    ports:
+      - '5555:5555'
+
+
+volumes:
+  postgres_data:

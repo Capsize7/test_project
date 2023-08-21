@@ -1,0 +1,31 @@
+{% extends 'main_app/base.html' %}
+{% block title %} Главная {% endblock %}
+{% block content %}
+    {% for file in files %}
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                {{ file.name }}
+                <span style="float: right">&#9989;</span>
+              </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ file.file.name|slice:'6::' }}</h5>
+                <p class="card-text">{{ file.description }}</p>
+                <a href="{% url 'main_app:update_file' file_slug=file.slug %}" class="btn btn-primary">Обновить</a>
+                <a href="{% url 'main_app:delete_file' file_slug=file.slug delete=True %}" class="btn btn-danger">Удалить</a>
+                <a href="{% url 'main_app:logs_file' file_slug=file.slug %}" class="btn btn-secondary">Отчет</a>
+              </div>
+            <div class="card-footer text-muted">
+                Дата загрузки:
+                {{ file.created }}
+                <span style="float: right">
+                    {% if file.status == 'UPD' %}
+                            Дата обновления:
+                            {{ file.updated }}
+                    {% endif %}
+                </span>
+              </div>
+        </div><br>
+    </div>
+    {% endfor %}
+{% endblock %}

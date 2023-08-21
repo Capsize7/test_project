@@ -1,0 +1,14 @@
+{% extends 'main_app/base.html' %}
+{% block title %} Отчет {% endblock %}
+{% block content %}
+    <h1 style="text-align: center">Отчет по файлу: {{ file.name }}</h1>
+    <h2 style="text-align: center">{{ file.file.name|slice:'6::' }}</h2>
+    {% for log in logs %}
+         <div class="card">
+             <div class="card-body">
+                 <h5 class="card-title">{{ forloop.counter }}. {{ log.created }}</h5>
+                 <p class="card-text">{{ log.description }}</p>
+             </div>
+         </div><br>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "main_app/base.html" %}
+{% load static %}
+{% block title %} Логин {% endblock %}
+{% block auth %}
+   <p id="warn" style="display:none; color:red; text-align:center; font-size: large">
+      Предупреждение: CapsLock включен!
+   </p>
+    <h2 style="text-align: center"> Авторизация {{ form.message }}</h2>
+        {% if form.errors %}
+        <div class="container d-flex align-items-center justify-content-center" style="padding-right: 20%; padding-left: 20%">
+            <div class="alert alert-warning alert-dismissible fade show w-75  d-block" role="alert">
+                {% for key, value in form.errors.items %}
+                    <strong>{{ value }}</strong>
+                {% endfor %}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    {% endif %}
+    <form method="post" style="padding-right: 20%; padding-left: 20%">
+        {% csrf_token %}
+        {% for field in form %}
+            <div>
+                {{ field.errors }}
+                {{ field.label_tag }}
+                {{ field }}
+            </div>
+        {% endfor %}
+        <script type="text/javascript" src="{% static 'scripts/CapsLock.js' %}"></script>
+        <br><input type="submit" class="btn btn-primary" value="Войти">
+        <a href="{% url 'accounts:signup' %}"  class="btn btn-group active btn-block">Зарегистрироваться</a>
+        <a class="btn btn-danger active btn-block" style="float: right;" href="{% url 'password_reset' %}">Сбросить пароль</a>
+    </form>
+{% endblock %}

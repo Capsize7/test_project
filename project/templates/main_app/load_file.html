@@ -1,0 +1,16 @@
+{% extends 'main_app/base.html' %}
+{% block title %} Главная {% endblock %}
+{% block content %}
+    <form method="post" enctype="multipart/form-data" class="form">
+        {% csrf_token %}
+        {% for field in fileform %}
+            <div>
+                {{ field.errors }}
+                {{ field.label_tag }}
+                {{ field }}
+            </div>
+        {% endfor %}
+        <br><input type="submit" class="btn btn-primary btn-lg" value="Загрузить">
+    </form>
+{% endblock %}
+
