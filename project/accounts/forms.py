@@ -1,10 +1,11 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
+
 from .models import *
 
 
-class SignUpForm(UserCreationForm):
+class SignUpForm(forms.ModelForm):
     username = forms.CharField(max_length=100, widget=forms.TextInput(
         attrs={"class": "form-control mb-1"}), label='Имя пользователя')
     email = forms.EmailField(widget=forms.TextInput(

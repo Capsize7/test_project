@@ -1,4 +1,5 @@
 {% extends 'main_app/base.html' %}
+{% load file_tags %}
 {% block title %} Отчет {% endblock %}
 {% block content %}
     <h1 style="text-align: center">Отчет по файлу: {{ file.name }}</h1>
@@ -11,4 +12,17 @@
              </div>
          </div><br>
     {% endfor %}
+{% endblock %}
+{% block tags %}
+    <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">Логи</div>
+                <div class="card-body">
+                    Количество: {% total_logs file.slug %}
+                </div>
+            </div>
+    </div>
+{% endblock %}
+{% block pagin %}
+{% include 'main_app/pagination.html' with page=logs %}
 {% endblock %}

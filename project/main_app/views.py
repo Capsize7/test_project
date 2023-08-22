@@ -1,18 +1,23 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.shortcuts import redirect
 from django.shortcuts import render
 from slug import slug
 
 from .forms import LoadFileForm
-from .models import File, Log
+from .models import File
 
 
 # Create your views here.
 @login_required
 def main_page(request):
-    files = File.objects.filter(author_id=request.user.id)
+    files = File.objects.filter(author_id=request.user.id).order_by('-updated', '-created')
+    paginator = Paginator(files, 3)
+    page_number = request.GET.get('page', 1)
+    files = paginator.get_page(page_number)
     return render(request, 'main_app/main_page.html', context={'files': files})
+
 
 @login_required
 def load_file(request):
@@ -29,6 +34,7 @@ def load_file(request):
         fileform = LoadFileForm()
 
     return render(request, 'main_app/load_file.html', context={'fileform': fileform})
+
 
 @login_required
 def update_file(request, file_slug, delete=False):
@@ -50,10 +56,13 @@ def update_file(request, file_slug, delete=False):
         return redirect('/main/')
     return render(request, 'main_app/load_file.html', context={'fileform': fileform})
 
+
 @login_required
 def logs_file(request, file_slug):
     file = File.objects.get(slug=file_slug)
     logs = file.log_set.all()
+    paginator = Paginator(logs, 3)
+    page_number = request.GET.get('page', 1)
+    logs = paginator.get_page(page_number)
 
     return render(request, 'main_app/logs_file.html', context={'file': file, 'logs': logs})
-

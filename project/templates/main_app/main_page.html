@@ -6,7 +6,11 @@
         <div class="card">
             <div class="card-header">
                 {{ file.name }}
+                {% if file.status == 'CHK' %}
                 <span style="float: right">&#9989;</span>
+                {% else %}
+                <span style="float: right">&#9203;</span>
+                {% endif %}
               </div>
             <div class="card-body">
                 <h5 class="card-title">{{ file.file.name|slice:'6::' }}</h5>
@@ -28,4 +32,7 @@
         </div><br>
     </div>
     {% endfor %}
+{% endblock %}
+{% block pagin%}
+{% include 'main_app/pagination.html' with page=files %}
 {% endblock %}
