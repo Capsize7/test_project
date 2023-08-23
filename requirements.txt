@@ -12,3 +12,4 @@ redis==3.5.3
 flower==1.2.0
 django-currentuser==0.5.3
 pylint
+gunicorn==20.1.0

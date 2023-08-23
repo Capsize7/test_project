@@ -1,0 +1,73 @@
+services:
+  web-app:
+    build:
+      context: .
+    expose:
+      - 8000
+      - 587
+    env_file: ./.env.prod
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/media
+
+    command: >
+      sh -c 'gunicorn project.wsgi:application --bind 0.0.0.0:8000'
+
+    depends_on:
+      - database
+      - redis
+
+  nginx:
+    build: ./project/nginx
+    ports:
+      - 1337:80
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/media
+    depends_on:
+      - web-app
+
+  database:
+    image: postgres:14.6-alpine
+    env_file: ./.env.prod
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+  redis:
+    image: redis:7.0.5-alpine
+    hostname: redis
+    volumes:
+      - /var/lib/redis/data/
+
+  celery:
+    build: .
+    command: >
+       sh -c "celery -A project worker -l info"
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/media
+    depends_on:
+      - redis
+    env_file: ./.env.prod
+  celery-beat:
+    build: .
+    command: celery -A project beat -l info
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/media
+    depends_on:
+      - redis
+
+  flower:
+    build: .
+    command: celery -A project flower
+    depends_on:
+      - redis
+    ports:
+      - '5555:5555'
+
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
