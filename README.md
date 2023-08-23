@@ -27,6 +27,9 @@ There is a celery task with celery-beat to set up the schedule for checking file
 
 4)Collect the static files
 - docker-compose -f docker-compose.prod.yml exec web-app python manage.py collectstatic --no-input
+
+5)Go to http://localhost:1337/main/
+
 ```
 
 ## License
