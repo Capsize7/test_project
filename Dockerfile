@@ -6,7 +6,7 @@ ENV PYTHONUNBUFFERED 1
 RUN mkdir -p /home/app
 
 
-RUN addgroup -S project_user && adduser -S project_user -G project_user
+RUN addgroup -S app && adduser -S app -G app
 
 ENV HOME=/home/app
 ENV APP_HOME=/home/app/web
@@ -22,7 +22,7 @@ RUN pip install -r /temp/requirements.txt
 
 COPY /project $APP_HOME
 
-RUN chown -R project_user:project_user $APP_HOME
-USER project_user
+RUN chown -R app:app $APP_HOME
+USER app
 
 
