@@ -4,7 +4,7 @@ Django==3.2.16
 python-dotenv==1.0.0
 pytz==2023.3
 sqlparse==0.4.4
-Pillow==10.0.0
+Pillow==10.0.1
 django-bootstrap5==23.3
 slug==2.0
 celery==5.1.2
